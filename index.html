@@ -155,7 +155,6 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="submit-btn" disabled>Generate QR Code</button>
-                <button type="submit" class="submit-btn" onclick="logout()">Logout</button>
             </form> 
         </div>
 
@@ -167,15 +166,6 @@
     </div>
 
     <script>
-        function logout() {
-            // Clear sessionStorage and localStorage if needed
-            sessionStorage.clear();
-            localStorage.clear();
-
-            // Redirect to the PHP logout script
-            window.location.href = "logout.php"; // Make sure logout.php exists
-        }
-
         let qrGenerated = false;  // Flag to check if the QR code is generated
 
         // Function to validate the form
