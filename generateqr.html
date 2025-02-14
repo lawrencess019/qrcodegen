@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate QR Code with Logo</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <link rel="stylesheet" href="generateqr.css">
+    <style>
+        /* Center the form when QR code is not generated */
+        .containers {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        /* Hide the form and canvas when QR code is generated */
+        .form-container.qr-generated form {
+            display: none;
+        }
+
+        canvas {
+            display: block;
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>GENERATE YOUR QR CODE ACCORDING TO YOUR EDUCATION BACKGROUND</h2>
+    </header>
+    <div class="containers">
+        <div class="form-container">
+            <form name="signupForm" class="signup-form" oninput="validateForm()" onsubmit="generateQRCode(event)">
+                <!-- Fullname -->
+                <div class="form-group">
+                    <label for="fullname" style="font-weight: bold;">Fullname: No Middle Name or Initials</label>
+                    <input type="text" id="fullname" placeholder="Ex. Bautista,John Lloyd (No spaces after comma)" name="fullname" required>
+                </div>
+
+                <!-- Year Level -->
+                <div class="form-group">
+                    <label for="level" style="font-weight: bold;">Year Level:</label>
+                    <select name="level" id="level" required>
+                        <option value="">Select Year Level</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                    </select>
+                </div>
+
+                <!-- Section -->
+                <div class="form-group">
+                    <label for="section"style="font-weight: bold;">Section:</label>
+                    <input type="text" id="section" placeholder="Ex. LFCA111M010" name="section" required>
+                </div>
+
+                <!-- ID Number -->
+                <div class="form-group">
+                    <label for="idNumber" style="font-weight: bold;">ID Number:</label>
+                    <input type="text" id="idNumber" placeholder="Student ID Number" name="idNumber" required>
+                </div>
+
+                <!-- Course -->
+                <div class="form-group">
+                    <label for="course" style="font-weight: bold;">Course:</label>
+                    <select name="course" id="course" required>
+                        <option value="">Select Course</option>
+
+                        <optgroup label="College of Arts & Sciences">
+                            <option value="ABCom">ABCom</option>
+                            <option value="ABEng">ABEng</option>
+                            <option value="BSM">BSM</option>
+                            <option value="BSP">BSP</option>
+                        </optgroup>
+
+                        <optgroup label="College of Business & Accountancy">
+                            <option value="ABA">ABA</option>
+                            <option value="BSAIS">BSAIS</option>
+                            <option value="BSA">BSA</option>
+                            <option value="BSMA">BSMA</option>
+                            <option value="BSREM">BSREM</option>
+                            <option value="BSUA">BSIA</option>
+                            <option value="BSBA">BSBA</option>
+                        </optgroup>
+
+                        <optgroup label="College of Computer Studies">
+                            <option value="ACT">ACT</option>
+                            <option value="BSCS">BSCS</option>
+                            <option value="BSIT">BSIT</option>
+                            <option value="BSIS">BSIS</option>
+                        </optgroup>
+
+                        <optgroup label="College of Teacher Education">
+                            <option value="BECEd">BECEd</option>
+                            <option value="BEEd">BEEd</option>
+                            <option value="BSEd">BSEd</option>
+                            <option value="BTVTEd">BTVTEd</option>
+                        </optgroup>
+
+                        <optgroup label="College of Maritime Education & Training">
+                            <option value="BSMT">BSMT</option>
+                        </optgroup>
+
+                        <optgroup label="College of Criminology & Administration">
+                            <option value="BSC">BSC</option>
+                            <option value="BSISM">BSISM</option>
+                            <option value="BSPA">BSPA</option>
+                        </optgroup>
+
+                        <optgroup label="College of Engineering">
+                            <option value="BSCE">BSCE</option>
+                            <option value="BSELE">BSELE</option>
+                        </optgroup>
+
+                        <optgroup label="College of Health Sciences">
+                            <option value="BSMedTech">BSMedTech</option>
+                        </optgroup>
+
+                        <optgroup label="International School of Hospitality & Tourism Management">
+                            <option value="BSHM">BSHM</option>
+                            <option value="BSTM">BSTM</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Set -->
+                <div class="form-group">
+                    <label for="set" style="font-weight: bold;">Set:</label>
+                    <select name="set" id="set" required>
+                        <option value="">Select Set</option>
+                        <option value="Set A">A</option>
+                        <option value="Set B">B</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" disabled>Generate QR Code</button>
+                <button type="submit" class="submit-btn" onclick="logout()">Logout</button>
+            </form> 
+        </div>
+
+        <!-- QR Code Display -->
+        <canvas id="qrCanvas" style="display: none;"></canvas>
+
+        <!-- Download Button -->
+        <a id="downloadBtn" class="download-btn" style="display: none;">Download QR Code</a>
+    </div>
+
+    <script>
+        function logout() {
+            // Clear sessionStorage and localStorage if needed
+            sessionStorage.clear();
+            localStorage.clear();
+
+            // Redirect to the PHP logout script
+            window.location.href = "logout.php"; // Make sure logout.php exists
+        }
+
+        let qrGenerated = false;  // Flag to check if the QR code is generated
+
+        // Function to validate the form
+        function validateForm() {
+            const fullname = document.forms["signupForm"]["fullname"].value;
+            const level = document.forms["signupForm"]["level"].value;
+            const section = document.forms["signupForm"]["section"].value;
+            const idNumber = document.forms["signupForm"]["idNumber"].value;
+            const course = document.forms["signupForm"]["course"].value;
+            const set = document.forms["signupForm"]["set"].value;
+
+            // Check if all fields are filled
+            if (fullname && level && section && idNumber && course && set) {
+                document.querySelector('.submit-btn').disabled = false;
+            } else {
+                document.querySelector('.submit-btn').disabled = true;
+            }
+        }
+
+        // Function to handle form submission and generate the QR code
+        function generateQRCode(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            if (qrGenerated) {
+                alert("You have already generated a QR code.");
+                return;
+            }
+
+            const fullname = document.forms["signupForm"]["fullname"].value;
+            const level = document.forms["signupForm"]["level"].value;
+            const section = document.forms["signupForm"]["section"].value;
+            const idNumber = document.forms["signupForm"]["idNumber"].value;
+            const course = document.forms["signupForm"]["course"].value;
+            const set = document.forms["signupForm"]["set"].value;
+
+            const qrData = `${fullname},${level},${section},${idNumber},${course},${set}`;
+
+            const canvas = document.getElementById("qrCanvas");
+            const ctx = canvas.getContext("2d");
+
+            QRCode.toCanvas(canvas, qrData, { width: 300 }, function (error) {
+                if (error) {
+                    console.error(error);
+                    alert("Error generating QR code!");
+                    return;
+                }
+
+                const logo = new Image();
+                logo.src = "logo.jpg"; // Change this to your logo path
+
+                logo.onload = function () {
+                    const qrSize = 300; // QR code size (adjust based on your needs)
+                    const logoSize = 70; // Adjust size of the logo
+                    const logoPadding = qrSize * 0.15; // Padding to avoid finder patterns
+
+                    // Calculate position to center logo without overlapping finder patterns
+                    const x = (canvas.width - logoSize) / 2;
+                    const y = (canvas.height - logoSize) / 2;
+
+                    // Draw the logo in the center with padding
+                    ctx.drawImage(logo, x, y, logoSize, logoSize);
+
+                    // Enable download button
+                    const downloadBtn = document.getElementById("downloadBtn");
+                    downloadBtn.href = canvas.toDataURL("image/png");
+                    downloadBtn.download = "QR_Code.png";
+                    downloadBtn.style.display = "inline-block";
+                };
+
+                // Update qrGenerated flag and toggle form visibility
+                qrGenerated = true;
+                document.querySelector('.form-container').classList.add('qr-generated');
+                canvas.style.display = "block"; // Show the QR canvas
+            });
+        }
+    </script>
+</body>
+</html>
