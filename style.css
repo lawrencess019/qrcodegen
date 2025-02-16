@@ -135,19 +135,20 @@ button.submit-btn:hover {
     transition: background-color 0.3s ease;
     width: 100%;
     max-width: 200px; /* Same width as the QR canvas */
-    background-color: #ff3700; /* Dark Blue for download button */
-    max-height: 50px;
-    height: 100%;
-    margin:auto;
+    background-color: #ff3700; /* Red button */
+    text-align: center;
+    margin: 20px auto;
 }
 
 .download-btn:hover {
-    background-color: #ee3838; /* Even darker Blue for hover */
+    background-color: #ee3838; /* Lighter red */
 }
 
 .download-btn:active {
-    background-color: #003366; /* Even darker blue for active */
+    background-color: #003366; /* Dark blue when clicked */
 }
+
+
 
 /* Footer Styling */
 footer {
