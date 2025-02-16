@@ -206,7 +206,7 @@
             const canvas = document.getElementById("qrCanvas");
             const ctx = canvas.getContext("2d");
 
-            QRCode.toCanvas(canvas, qrData, { width: 300, margin: 3}, function (error) {
+            QRCode.toCanvas(canvas, qrData, { width: 300, margin: 2.5}, function (error) {
                 if (error) {
                     console.error(error);
                     alert("Error generating QR code!");
