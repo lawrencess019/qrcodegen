@@ -206,7 +206,7 @@
             const canvas = document.getElementById("qrCanvas");
             const ctx = canvas.getContext("2d");
 
-            QRCode.toCanvas(canvas, qrData, { width: 1000, scale: 20, margin: 1}, function (error) {
+            QRCode.toCanvas(canvas, qrData, { width: 600, scale: 20, margin: 1}, function (error) {
                 if (error) {
                     console.error(error);
                     alert("Error generating QR code!");
@@ -217,7 +217,7 @@
                 logo.src = "logo.jpg"; // Change this to your logo path
 
                 logo.onload = function () {
-                    const qrSize = 300; // QR code size (adjust based on your needs)
+                    const qrSize = 400; // QR code size (adjust based on your needs)
                     const logoSize = 70; // Adjust size of the logo
                     const logoPadding = qrSize * 0.15; // Padding to avoid finder patterns
 
