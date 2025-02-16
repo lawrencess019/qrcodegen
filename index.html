@@ -52,11 +52,17 @@
         <div class="form-container">
             <form name="signupForm" class="signup-form" oninput="validateForm()" onsubmit="generateQRCode(event)">
                 <!-- Fullname -->
+                <!-- Lastname -->
                 <div class="form-group">
-                    <label for="fullname" style="font-weight: bold;">Fullname: No Middle Name or Initials</label>
-                    <input type="text" id="fullname" placeholder="Ex. Bautista,John Lloyd (No spaces after comma)" name="fullname" required>
+                    <label for="lastname" style="font-weight: bold;">Lastname:</label>
+                    <input type="text" id="lastname" placeholder="Ex. Bautista" name="lastname" required>
                 </div>
-
+                
+                <!-- Firstname -->
+                <div class="form-group">
+                    <label for="firstname" style="font-weight: bold;">Firstname:</label>
+                    <input type="text" id="firstname" placeholder="Ex. John Lloyd" name="firstname" required>
+                </div>
                 <!-- Year Level -->
                 <div class="form-group">
                     <label for="level" style="font-weight: bold;">Year Level:</label>
@@ -80,7 +86,6 @@
                     <input type="text" id="idNumber" placeholder="Student ID Number" name="idNumber" required>
                 </div>
 
-                <!-- Course -->
                 <div class="form-group">
                     <label for="course" style="font-weight: bold;">Course:</label>
                     <select name="course" id="course" required>
@@ -160,9 +165,9 @@
 
         <!-- QR Code Display -->
         <canvas id="qrCanvas" style="display: none;"></canvas>
-
-        <!-- Download Button -->
         <a id="downloadBtn" class="download-btn" style="display: none;">Download QR Code</a>
+
+
     </div>
 
     <script>
@@ -170,7 +175,8 @@
 
         // Function to validate the form
         function validateForm() {
-            const fullname = document.forms["signupForm"]["fullname"].value;
+            const lastname = document.forms["signupForm"]["lastname"].value;
+            const firstname = document.forms["signupForm"]["firstname"].value;
             const level = document.forms["signupForm"]["level"].value;
             const section = document.forms["signupForm"]["section"].value;
             const idNumber = document.forms["signupForm"]["idNumber"].value;
@@ -178,7 +184,7 @@
             const set = document.forms["signupForm"]["set"].value;
 
             // Check if all fields are filled
-            if (fullname && level && section && idNumber && course && set) {
+            if (lastname && firstname && level && section && idNumber && course && set) {
                 document.querySelector('.submit-btn').disabled = false;
             } else {
                 document.querySelector('.submit-btn').disabled = true;
@@ -186,61 +192,55 @@
         }
 
         // Function to handle form submission and generate the QR code
+        // Function to handle form submission and generate the QR code
         function generateQRCode(event) {
-            event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); // Prevent form submission
 
-            if (qrGenerated) {
-                alert("You have already generated a QR code.");
-                return;
-            }
+    if (qrGenerated) {
+        alert("You have already generated a QR code.");
+        return;
+    }
 
-            const fullname = document.forms["signupForm"]["fullname"].value;
-            const level = document.forms["signupForm"]["level"].value;
-            const section = document.forms["signupForm"]["section"].value;
-            const idNumber = document.forms["signupForm"]["idNumber"].value;
-            const course = document.forms["signupForm"]["course"].value;
-            const set = document.forms["signupForm"]["set"].value;
+    const lastname = document.forms["signupForm"]["lastname"].value;
+    const firstname = document.forms["signupForm"]["firstname"].value;
+    const level = document.forms["signupForm"]["level"].value;
+    const section = document.forms["signupForm"]["section"].value;
+    const idNumber = document.forms["signupForm"]["idNumber"].value;
+    const course = document.forms["signupForm"]["course"].value;
+    const set = document.forms["signupForm"]["set"].value;
 
-            const qrData = `${fullname},${level},${section},${idNumber},${course},${set}`;
+    const qrData = `${lastname},${firstname},${level},${section},${idNumber},${course},${set}`;
 
-            const canvas = document.getElementById("qrCanvas");
-            const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("qrCanvas");
+    const ctx = canvas.getContext("2d");
 
-            QRCode.toCanvas(canvas, qrData, { width: 600, scale: 20, margin: 1}, function (error) {
-                if (error) {
-                    console.error(error);
-                    alert("Error generating QR code!");
-                    return;
-                }
+    const qrSize = 600;
+    canvas.width = qrSize;
+    canvas.height = qrSize;
 
-                const logo = new Image();
-                logo.src = "logo.jpg"; // Change this to your logo path
-
-                logo.onload = function () {
-                    const qrSize = 400; // QR code size (adjust based on your needs)
-                    const logoSize = 80; // Adjust size of the logo
-                    const logoPadding = qrSize * 0.15; // Padding to avoid finder patterns
-
-                    // Calculate position to center logo without overlapping finder patterns
-                    const x = (canvas.width - logoSize) / 2;
-                    const y = (canvas.height - logoSize) / 2;
-
-                    // Draw the logo in the center with padding
-                    ctx.drawImage(logo, x, y, logoSize, logoSize);
-
-                    // Enable download button
-                    const downloadBtn = document.getElementById("downloadBtn");
-                    downloadBtn.href = canvas.toDataURL("image/png");
-                    downloadBtn.download = "QR_Code.png";
-                    downloadBtn.style.display = "inline-block";
-                };
-
-                // Update qrGenerated flag and toggle form visibility
-                qrGenerated = true;
-                document.querySelector('.form-container').classList.add('qr-generated');
-                canvas.style.display = "block"; // Show the QR canvas
-            });
+    QRCode.toCanvas(canvas, qrData, { width: qrSize, margin: 1 }, function (error) {
+        if (error) {
+            console.error(error);
+            alert("Error generating QR code!");
+            return;
         }
+
+        // Show QR code and enable download button
+        qrGenerated = true;
+        document.querySelector('.form-container').classList.add('qr-generated');
+        canvas.style.display = "block"; // Show QR code
+
+        // Enable download button
+        const downloadBtn = document.getElementById("downloadBtn");
+        downloadBtn.href = canvas.toDataURL("image/png");
+        downloadBtn.download = "QR_Code.png";
+        downloadBtn.style.display = "inline-block"; // Make the button visible
+        downloadBtn.innerText = "Download QR Code";
+    });
+}
+
+
+
     </script>
 </body>
 </html>
