@@ -26,11 +26,14 @@ header {
 }
 
 header h2 {
-    font-size: 1.3em;
+    font-size: 1.7em;
     margin: 0;
     letter-spacing: 1px;
 }
 
+p {
+    color: white;
+}
 /* Containers Layout */
 .containers {
     display: flex;
